@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import '../dash/Dashboard.css'
 import { GrFormView } from 'react-icons/gr'
-import { NavLink ,useNavigate} from 'react-router-dom'
+import { NavLink ,useNavigate} from 'react-router-dom';
+
 
 const Dashboard = () => {
 
   const [getuserdata, setUserData] = useState([]);
-  console.log("getuserdata :-", getuserdata)
+  console.log("getuserdata :-", getuserdata.data)
 
   const getdata = async (e) => {
     const res = await fetch("/getdata", {
-      method: "GET",
+      method: "POST",
       headers: {
-        "Content-type": "application/json"
-      }
+        "Content-type": "application/json",
+        Accept:"application/json",
+        "Access-Control-Allow-Origin":"*",
+      },
+      body: JSON.stringify({
+        token:window.localStorage.getItem("token"),
+      })
     })
     const data = await res.json();
     console.log("data", data)
@@ -30,11 +36,17 @@ const Dashboard = () => {
     getdata();
   }, [])
 
+  const logOut = () =>{
+    window.localStorage.clear();
+  }
+
   return (
     <>
     <br/>
-    <h1>-: Dashboard :-</h1>
-      <br/><br/>
+      <h1>-: Dashboard :-</h1> 
+      <button onClick={logOut}><NavLink to='/'>logOut</NavLink></button> 
+      <br/>
+      
     <div className='mt-5'>
       <div className='container'>
         <table>

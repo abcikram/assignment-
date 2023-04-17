@@ -39,8 +39,8 @@ const AdminRegister = () => {
             if (res.status === 404 || !data || res.status === 400) {
                 alert(data.message)
             } else {
-                alert("data added Successfully");
-                console.log("data added Successfully")
+                alert("Register Successfully");
+                console.log("Register Successfully")
             }
         }else{
             alert("Invalid Input or password do not match confirm password")

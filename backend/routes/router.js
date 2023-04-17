@@ -4,7 +4,7 @@ import asyncHandler from "express-async-handler";
 import Viewer from '../models/customerModel.js';
 import User from "../models/userModel.js";
 import bcrypt from 'bcrypt'
-
+import jwt from 'jsonwebtoken'
 
 
 const isValidPhone = function (phone) {
@@ -16,7 +16,7 @@ const isVAlidEmail = function (email) {
 };
 
 
-//user register :-
+//Admin register :-
 router.post("/register",asyncHandler(async (req, res) => {
 
     // console.log(req.body)
@@ -54,8 +54,7 @@ router.post("/register",asyncHandler(async (req, res) => {
 }))
 
 
-//user login :-
-
+//Admin login :-
 
 router.post("/login",asyncHandler(async (req, res) => {
 
@@ -69,12 +68,21 @@ router.post("/login",asyncHandler(async (req, res) => {
     let passwordData = await bcrypt.compare(password, findPassword.password);
 
     let check = await User.findOne({ email: email, password: findPassword.password });
+     
 
-
-        if (check) {
-            res.json('exist')
+        if (!check) {
+            res.status(404).json('User not exist')
         } else {
-            res.json('not exist')
+            let token = jwt.sign(
+                {
+                    userId: check._id,
+                    email:  check.email
+                },
+                "ASSIGNMENT-DONE"
+            );
+
+
+            return res.status(200).send({message: "User login successfull", data: token });
         }
 
     } catch (error) {
@@ -122,9 +130,16 @@ router.post('/contact', asyncHandler(async(req, res) => {
 
 // get viewerData :-
 
-router.get("/getdata",asyncHandler(async(req,res) =>{
+router.post("/getdata",asyncHandler(async(req,res) =>{
     try{
+
+    const {token} = req.body
+
+    const user = jwt.verify(token,"ASSIGNMENT-DONE")
+
      const viewerData = await Viewer.find();
+
+     console.log(viewerData)
 
      res.status(200).json(viewerData)
 
