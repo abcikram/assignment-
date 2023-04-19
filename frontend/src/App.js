@@ -5,10 +5,11 @@ import Home from './Component/Page/Home';
 import Navbar from './Component/Header/Navbar';
 import About from './Component/content/About';
 import ContectUs from './Component/Page/ContectUs';
-import Admin from './Component/Page/Admin';
+import Admin from './Component/Page/AdminLogin';
 import AdminRegister from './Component/Page/AdminRegister';
 import Dashboard from './Component/dash/Dashboard'
 import Details from './Component/details/Details';
+import Edit from './Component/dash/Edit';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path='/adminregister' element={<AdminRegister />} />
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/dashboard/contact/:id' element={<Details />} />
+        <Route path='/dashboard/edit/:id' element={<Edit/>} />
       </Routes>
     </BrowserRouter>
 

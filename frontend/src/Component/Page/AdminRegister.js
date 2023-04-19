@@ -1,8 +1,12 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import "./AdminRegister.css";
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { adddata } from '../context/ContextProvider';
 
 const AdminRegister = () => {
+
+
+    const navigate = useNavigate()
 
     const [user, setUser] = useState({
         name: "",
@@ -40,7 +44,7 @@ const AdminRegister = () => {
                 alert(data.message)
             } else {
                 alert("Register Successfully");
-                console.log("Register Successfully")
+                navigate('/')
             }
         }else{
             alert("Invalid Input or password do not match confirm password")
@@ -65,7 +69,7 @@ const AdminRegister = () => {
 
             <div className='button' onClick={register}>Register</div>
             <div>or</div>
-            <div><NavLink to="/admin" className='button'>Login</NavLink></div>
+            <div className='button' onClick={() => navigate("/admin")}>Login</div>
         </div>
     )
 }

@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 import './AdminLogin.css'
-import AdminRegister from './AdminRegister'
-import axios from 'axios'
 import { useNavigate, NavLink } from 'react-router-dom';
-import {useHistory} from 'react-router-dom'
+
 
 
 const Admin = () => {
 
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const [user, setUser] = useState({
     email: "",
@@ -52,25 +50,6 @@ const Admin = () => {
     }
   }
 
-
-  // const login = async (e) => {
-  //   const { email, password } = user;
-  //   if (email && password) {
-  //     axios.post("http://localhost:9002/login", user)
-  //       .then(res => {
-  //         if (res.data == 'exist') {
-  //           alert('Admin login Successfully')
-  //           history("/dashboard")
-  //         } else if (res.data == "not exist") {
-  //           alert("Admin have not sign in")
-  //         }
-  //       })
-  //   } else {
-  //     alert("invalid input")
-  //   }
-  // }
-
-
   return (
     <>
       <div className='login'>
@@ -83,8 +62,7 @@ const Admin = () => {
 
         <div className='button' onClick={login}>login</div>
         <div>or </div> 
-        <br/>
-        <div onClick={() => history('/adminregister')} className='button'>Register</div>
+        <div onClick={() => navigate('/adminregister')} className='button'>Register</div>
       </div>
 
     </>

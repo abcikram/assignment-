@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import "./details.css"
 import { FaUserAlt } from 'react-icons/fa'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
 
 const Details = () => {
 
-    const { id } = useParams("");
+    const navigate = useNavigate();
+
+    // const userId = useParams("");  
+    // console.log("userId",userId)
+    // const id = userId.id 
+
+    const { id } = useParams(); //using the useParams we are get the params id form
+    //from NavLink to={`contact/${element._id}`} in dashboard .
+    
     console.log("param_id", id);
 
-    const [getuserdata, setUserData] = useState([]);
-    console.log(getuserdata)
+    const [getuserdata, setUserData] = useState("");
+    console.log("getuserdata",getuserdata)
 
     const getdata = async (e) => {
         const res = await fetch(`/getviewer/${id}`, {
@@ -22,8 +30,8 @@ const Details = () => {
         const data = await res.json();
         console.log("data", data)
 
-        if (res.status === 404 || !data) {
-            console.log('error')
+        if (res.status === 404 || !data || res.status === 400) {
+            alert(data.message)
         } else {
             setUserData(data)  /*{// update the data using useSate([]) hook and update data will store getuserdata //}*/
             console.log("get data")
@@ -36,7 +44,7 @@ const Details = () => {
 
     return (
     <>
-         <NavLink className='btn' to='/dashboard'>Go Back</NavLink>
+         <div className='button' onClick={() => navigate(-1)}>Go Back</div><br/>
         <div className='style-viewer'>
             <FaUserAlt />
             <h2>Name:{getuserdata.name}</h2>

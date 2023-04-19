@@ -17,7 +17,6 @@ const Navbar = () => {
     return (
         <>
             <IconContext.Provider value={{ color: '#fff' }}>
-                <img className="logo" src={LogoImg} />
                 <div className='navbar'>      
                     <Link to="#" className='menu-bars'>
                         <FaIcons.FaBars onClick={showSidebar} />

@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
-import './ContectUs.css'
-import { adddata } from '../context/ContextProvider';
-import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { updatedata } from '../context/ContextProvider'
 
 
-const ContectUs = () => {
-
-  const { udata, setUdata } = useContext(adddata);
+const Edit = () => {
+  const { update, setUpdate } = useContext(updatedata)
 
   const navigate = useNavigate()
 
@@ -22,26 +20,24 @@ const ContectUs = () => {
 
   const setData = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
 
     setINP({
       ...inpval,
       [name]: value
     })
   }
+  const { id } = useParams(); //using the useParams we are get the params id form
+  //from NavLink to={`contact/${element._id}`} in dashboard .
 
-  const addinpdata = async (e) => {
+  console.log("param_id", id);
 
-    e.preventDefault();
-
-    const { name, email, age, phone, address, description } = inpval;
-    const res = await fetch("/contact", {
-      method: "POST",
+  const getdata = async (e) => {
+    const res = await fetch(`/getviewer/${id}`, {
+      method: "GET",
       headers: {
         "Content-type": "application/json"
-      },
-      body: JSON.stringify({
-        name, email, age, phone, address, description
-      })
+      }
     })
     const data = await res.json();
     console.log("data", data)
@@ -49,26 +45,50 @@ const ContectUs = () => {
     if (res.status === 404 || !data || res.status === 400) {
       alert(data.message)
     } else {
-      setUdata(data)
-      alert("data added Successfully");
-      console.log("data added Successfully")
-      navigate('/')
+      setINP(data) 
+      console.log("get data")
+    }
+  }
+
+  useEffect(() => {
+    getdata()
+  }, [])
+
+
+  const updateviewer = async(e) =>{
+    e.preventDefault();
+
+    const { name, email, age, phone, address, description } = inpval;
+
+    const res2 = await fetch(`/update/${id}`,{
+      method:"PATCH",
+      headers: {
+        "Content-type": "application/json"
+      },
+      body:JSON.stringify({
+        name, email, age, phone, address, description
+      })
+    })
+
+    const data2 = await res2.json()
+
+    console.log("data2",data2);
+
+    if(res2.status=== 200){
+      alert("Data updated Successfully")
+
+      navigate('/dashboard') // after data update go or redirect to dashboard page
+      
+      setUpdate(data2)
+      
+    }else{
+      alert(data2.message);
     }
   }
 
   return (
     <>
-      {
-        udata ? <>
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>{udata.name}</strong> user added successfully
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-
-
-        </> : ""
-      }
-      <h1>Contact Us :-</h1>
+      <h1>Edit:-</h1>
 
       <form>
         <div>
@@ -105,10 +125,11 @@ const ContectUs = () => {
           </div>
         </div>
 
-        <input type="submit" onClick={addinpdata} value="Submit" />
+        <input type="submit" onClick={updateviewer} value="Submit" />
       </form>
     </>
   )
 }
 
-export default ContectUs
+
+export default Edit

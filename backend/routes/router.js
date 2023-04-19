@@ -130,16 +130,43 @@ router.post('/contact', asyncHandler(async(req, res) => {
 
 // get viewerData :-
 
-router.post("/getdata",asyncHandler(async(req,res) =>{
+
+const authentication = function (req, res, next){
+
+const token = req.headers["authorization"]; 
+    //check if bearer is undefined
+    // console.log(token)
+    if (!token) {
+      return res
+        .status(401)
+        .send({ status: false, message: "login is required" });
+    }
+
+    let splitToken = token.split(" ");
+
+    // token validation.
+    if (!token) {
+      return res
+        .status(400)
+        .send({ status: false, message: "token must be present" });
+    }
+    //Seting userId in headers for Future Use
+    else {
+        jwt.verify(splitToken[1], "ASSIGNMENT-DONE", function (err, data) {
+        if (err) {
+          return res.status(400).send({ status: false, message: err.message });
+        } else {
+          req.userId = data.userId;
+          next();
+        }
+      });
+    }
+}
+
+router.get("/getdata",authentication,asyncHandler(async (req, res) => {
     try{
 
-    const {token} = req.body
-
-    const user = jwt.verify(token,"ASSIGNMENT-DONE")
-
      const viewerData = await Viewer.find();
-
-     console.log(viewerData)
 
      res.status(200).json(viewerData)
 
@@ -154,15 +181,76 @@ router.get("/getviewer/:id",asyncHandler(async (req, res) => {
     try {
         const {id} = req.params;
 
-        const viewerIndividual = await Viewer.findById({_id:id});
+        const viewerIndividual = await Viewer.findById({_id:id}).sort();
+
+        if(!viewerIndividual) res.status(404).send({message:"Not found data"})
 
         res.status(201).json(viewerIndividual)
     
     } catch (error) {
-        res.status(404).json(error.message)
+        res.status(400).json(error.message)
     }
 }))
 
+//edit/update :-
+
+
+router.patch('/update/:userId',asyncHandler(async(req, res)=> {
+    try {
+
+        const userIdByparam = req.params.userId;
+
+        let { name, email, age, phone, address, description } = req.body;
+
+        if (Object.keys(req.body).length == 0) {
+            return res.status(400).send({ status: false, message: "Body can't be empty , please enter some data" })
+        }
+        
+        if (!isVAlidEmail(email)) {
+            res.status(400).json({ message: "Please provide valid email id." });
+        }
+
+        if (!isValidPhone(phone)) {
+            res.status(400).json({ message: "Please provide valid phone number start 6 or 7 or 8 or 9. and 10 digit" });
+        }
+
+        
+        let viewerExist = await Viewer.findById(userIdByparam)
+
+        let updatedData = await Viewer.findOneAndUpdate(
+            { _id: userIdByparam },
+            { $set: { name, email, age, phone, address, description } },
+            { new: true }
+        );
+        if (!updatedData) {
+            return res.status(404).send({ status: false, message: "Wrong Info Entered" });
+        }
+        res.status(200).send({ status: true, data: updatedData });
+    } catch (error) {
+        res.status(422).send({ status: false, message: error.message });
+    }
+}))
+
+
+
+router.delete('/delete/:userId',asyncHandler(async (req, res) => {
+    try {
+
+        const userIdByparam = req.params.userId;
+
+        let viewerExist = await Viewer.findById(userIdByparam)
+
+        let updatedData = await Viewer.findByIdAndDelete(
+            { _id: userIdByparam }
+        );
+        if (!updatedData) {
+            return res.status(404).send({ status: false, message: "Wrong Info Entered"});
+        }
+        res.status(200).send({ status: true, message:'Deleted is Successfull' ,data:updatedData});
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message });
+    }
+}))
 
 
 export default router
