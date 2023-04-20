@@ -68,3 +68,23 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+
+
+axios.post("http://localhost:9002/register",user)
+            .then(res => { 
+                console.log("res",res)
+
+                const data = res.json()
+                console.log("data",data)
+                if(res.status == 400 || res.status == 404 ){    
+                    alert(res.data.message)
+                }else{
+                    alert("Admin register Successfully")
+                }
+            }).catch(err => alert(err.message))
+        }else{
+            alert("invalid input or put correct password")
+        }

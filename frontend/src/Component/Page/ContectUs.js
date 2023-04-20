@@ -73,23 +73,27 @@ const ContectUs = () => {
       <form>
         <div>
           <label htmlFor="name">Name:</label>
-          <input type="text" id="name" value={inpval.name} name="name" placeholder='Enter your Name' onChange={setData} required />
+          <input type="text" id="name" value={inpval.name} name="name" placeholder='Enter your Name'
+            onChange={setData} required />
         </div>
 
         <div>
           <label htmlFor="email">Email:</label>
-          <input type="email" id="email" value={inpval.email} name="email" placeholder='Enter your email' onChange={setData} required />
+          <input type="email" id="email" value={inpval.email} name="email" placeholder='Enter your email'
+            onChange={setData} required />
         </div>
 
         <div className="row">
           <div>
             <label htmlFor="phone">Phone:</label>
-            <input type="number" id="phone" value={inpval.phone} name="phone" placeholder='Enter your phone number' onChange={setData} required />
+            <input type="number" id="phone" value={inpval.phone} name="phone" placeholder='Enter your phone number'
+              onChange={setData} required />
           </div>
 
           <div>
             <label htmlFor="age">Age:</label>
-            <input type="number" id="age" value={inpval.age} name="age" placeholder='Enter your age' onChange={setData} required />
+            <input type="number" id="age" value={inpval.age} name="age" placeholder='Enter your age'
+              onChange={setData} required />
           </div>
         </div>
 
